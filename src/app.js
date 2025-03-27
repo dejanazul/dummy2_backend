@@ -21,7 +21,7 @@ const authenticationToken = (req, res, next) => {
     return res.status(401).json({ message: "Token Required!" });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+  jwt.verify(token, process.env.SUPABASE_JWT_SECRET, (err, user) => {
     if (err) {
       return res.status(401).json({ message: "Invalid Token!" });
     }
@@ -72,7 +72,7 @@ app.post("/login", async (req, res) => {
 
     const token = jwt.sign(
       { id: data.id, username: data.username },
-      process.env.JWT_SECRET,
+      process.env.SUPABASE_JWT_SECRET,
       { expiresIn: "1h" }
     );
 
