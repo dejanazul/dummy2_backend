@@ -1,11 +1,11 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const dotenv = require("dotenv");
+// const dotenv = require("dotenv");
 const supabase = require("./config/database.js");
 const cors = require("cors");
 
-dotenv.config();
+// dotenv.config();
 const app = express();
 
 //middleware
@@ -29,6 +29,16 @@ const authenticationToken = (req, res, next) => {
     next();
   });
 };
+
+//env debugger
+app.get('/debug-env', (req, res) => {
+  res.json({
+    supabaseUrl: process.env.SUPABASE_URL ? 'Ada' : 'Tidak Ada',
+    supabaseKey: process.env.SUPABASE_SERVICE_ROLE_KEY ? 'Ada' : 'Tidak Ada',
+    jwtSecret: process.env.SUPABASE_JWT_SECRET ? 'Ada' : 'Tidak Ada',
+    fullSupabaseUrl: process.env.SUPABASE_URL || 'Tidak Terdeteksi'
+  });
+});
 
 //endpoint register pengguna baru
 app.post("/register", async (req, res) => {

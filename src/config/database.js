@@ -1,8 +1,8 @@
 // const { Pool } = require("pg");
 const { createClient } = require("@supabase/supabase-js");
-const dotenv = require("dotenv");
+// const dotenv = require("dotenv");
 
-dotenv.config();
+// dotenv.config();
 // const pool = new Pool({
 //   host: process.env.DB_HOST,
 //   user: process.env.DB_USER,
