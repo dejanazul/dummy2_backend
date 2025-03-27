@@ -2,12 +2,15 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const dotenv = require("dotenv");
-const db = require("./config/database.js");
+const supabase = require("./config/database.js");
+const cors = require("cors");
 
 dotenv.config();
 const app = express();
 
+//middleware
 app.use(express.json());
+app.use(cors());
 
 //middleware auth jwt
 const authenticationToken = (req, res, next) => {
@@ -32,13 +35,17 @@ app.post("/register", async (req, res) => {
   const { username, password } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const result = await db.query(
-      "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id",
-      [username, hashedPassword]
-    );
-    res
-      .status(201)
-      .json({ message: "User Registered", userId: result.rows[0].id });
+    const { data, error } = await supabase
+      .from("users")
+      .insert({
+        username: username,
+        password: hashedPassword,
+      })
+      .select();
+
+    if (error) throw error;
+
+    res.status(201).json({ message: "User registered", userId: data[0].id });
   } catch (err) {
     res
       .status(400)
@@ -49,17 +56,22 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
   try {
-    const result = await db.query("SELECT * FROM users WHERE username = $1", [
-      username,
-    ]);
-    const user = result.rows[0];
+    const { data, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("username", username)
+      .single();
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
+    if (error) throw error;
+
+    const isPasswordValid = await bcrypt.compare(password, data.password);
+
+    if (!data || !isPasswordValid) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
     const token = jwt.sign(
-      { id: user.id, username: user.username },
+      { id: data.id, username: data.username },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
