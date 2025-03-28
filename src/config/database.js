@@ -25,6 +25,10 @@ const { createClient } = require("@supabase/supabase-js");
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
+console.log('Initializing Supabase...');
+console.log('Supabase URL:', process.env.SUPABASE_URL ? 'Tersedia' : 'Tidak Tersedia');
+console.log('Supabase Key:', process.env.SUPABASE_SERVICE_ROLE_KEY ? 'Tersedia' : 'Tidak Tersedia');
+
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 module.exports = supabase;

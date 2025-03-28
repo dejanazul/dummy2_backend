@@ -32,6 +32,16 @@ const authenticationToken = (req, res, next) => {
 
 //env debugger
 app.get('/debug-env', (req, res) => {
+  // Log di server
+  console.log('Environment Debug Request Received');
+  
+  // Logging environment variables
+  console.log('Environment Variables:', {
+    SUPABASE_URL: process.env.SUPABASE_URL ? 'Ada' : 'Tidak Ada',
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY?.length,
+    SUPABASE_JWT_SECRET: process.env.SUPABASE_JWT_SECRET?.length
+  });
+
   res.json({
     supabaseUrl: process.env.SUPABASE_URL ? 'Ada' : 'Tidak Ada',
     supabaseKey: process.env.SUPABASE_SERVICE_ROLE_KEY ? 'Ada' : 'Tidak Ada',
